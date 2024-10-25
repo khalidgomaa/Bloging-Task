@@ -3,7 +3,8 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 class LoginRequest extends FormRequest
 {
     /**
@@ -22,8 +23,8 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone' => 'required|string',
-            'password' => 'required|string',
+            'phone' => 'required|digits:11',
+            'password' => 'required',
         ];
     }
 
@@ -33,5 +34,15 @@ class LoginRequest extends FormRequest
             'phone.required' => 'Phone number is required',
             'password.required' => 'Password is required',
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+
+        throw new HttpResponseException(response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $errors
+        ], 422));
     }
 }

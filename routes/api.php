@@ -15,4 +15,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/verify', [AuthController::class, 'verify']);
+Route::post('/verify-phone', [AuthController::class, 'verify']);

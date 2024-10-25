@@ -31,8 +31,5 @@ class UserRepository implements UserRepositoryInterface
         return $user->update($data);
     }
 
-    public function createToken(User $user): string
-    {
-        return $user->createToken('auth_token')->plainTextToken;
-    }
+
 }

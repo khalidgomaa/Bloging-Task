@@ -3,7 +3,8 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 class VerifyPhoneRequest extends FormRequest
 {
     /**
@@ -11,7 +12,7 @@ class VerifyPhoneRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,7 @@ class VerifyPhoneRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone' => 'required|string',
+            'phone' => 'required|numeric',
             'verification_code' => 'required|digits:6',
         ];
     }
@@ -35,5 +36,14 @@ class VerifyPhoneRequest extends FormRequest
             'verification_code.digits' => 'Verification code must be exactly 6 digits',
         ];
     }
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
 
+        throw new HttpResponseException(response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $errors
+        ], 422));
+    }
 }
